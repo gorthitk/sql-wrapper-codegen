@@ -1,1 +1,1 @@
-# sql-wrapper-codegen [![Gradle Status](https://gradleupdate.appspot.com/jetsasank/sql-wrapper-codegen/status.svg)](https://gradleupdate.appspot.com/jetsasank/sql-wrapper-codegen/status)
+# sql-wrapper-codegen [![Gradle Status](https://gradleupdate.appspot.com/jetsasank/sql-wrapper-codegen/status.svg)](https://gradleupdate.appspot.com/jetsasank/sql-wrapper-codegen/status) [![CircleCI](https://circleci.com/gh/jetsasank/sql-wrapper-codegen/tree/master.svg?style=svg)](https://circleci.com/gh/jetsasank/sql-wrapper-codegen/tree/master)
