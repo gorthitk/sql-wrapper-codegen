@@ -3,7 +3,6 @@ package com.jet.sql.codegen.plugin;
 import org.gradle.api.Project;
 import org.testng.Assert;
 import org.gradle.testfixtures.ProjectBuilder;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 /**
@@ -14,7 +13,6 @@ import org.testng.annotations.Test;
  */
 public class SqlWrapperPluginTest
 {
-    @Ignore
     @Test
     public void testPluginIsApplied()
     {

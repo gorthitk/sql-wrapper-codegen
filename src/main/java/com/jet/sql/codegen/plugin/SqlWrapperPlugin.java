@@ -16,8 +16,7 @@ public class SqlWrapperPlugin implements Plugin<Project>
     @Override
     public void apply(final Project project)
     {
-        final SqlWrapperExtension extension = project.getExtensions().create("sqlWrapperConfig",
-                SqlWrapperExtension.class);
+        final SqlWrapperExtension extension = project.getExtensions().create("sqlWrapperConfig", SqlWrapperExtension.class);
 
         final SqlWrapperBuilder wrapperBuilder = new SqlWrapperBuilder();
 
