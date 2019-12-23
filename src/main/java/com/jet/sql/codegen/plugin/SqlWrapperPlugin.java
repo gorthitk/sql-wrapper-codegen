@@ -23,7 +23,6 @@ public class SqlWrapperPlugin implements Plugin<Project>
         project.task(TASK_ID)
                 .doFirst(task ->
                 {
-                    new CopyDependentSrcCode().execute(extension.generatedFileDirectory.toPath().toString());
                     final String relativeDirectoryPath = project.file(extension.generatedFileDirectory).getPath();
                     extension.sources.forEach(file -> wrapperBuilder.run(file.getPath(), relativeDirectoryPath, project.getLogger()));
                 });
