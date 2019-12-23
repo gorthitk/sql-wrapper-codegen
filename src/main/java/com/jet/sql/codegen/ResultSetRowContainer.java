@@ -1,4 +1,4 @@
-package com.jet;
+package com.jet.sql.codegen;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;

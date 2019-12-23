@@ -1,4 +1,4 @@
-package com.jet;
+package com.jet.sql.codegen;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;

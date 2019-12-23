@@ -1,4 +1,4 @@
-package com.jet.wrapper.model;
+package com.jet.sql.codegen.wrapper.model;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;

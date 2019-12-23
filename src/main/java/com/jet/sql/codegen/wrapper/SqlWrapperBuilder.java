@@ -1,12 +1,12 @@
-package com.jet.wrapper;
+package com.jet.sql.codegen.wrapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.jet.wrapper.model.JavaTypeSupplier;
-import com.jet.wrapper.model.QueryArgument;
-import com.jet.wrapper.model.ResultColumns;
-import com.jet.wrapper.model.SqlQuery;
-import com.jet.wrapper.model.WrapperConfig;
+import com.jet.sql.codegen.wrapper.model.JavaTypeSupplier;
+import com.jet.sql.codegen.wrapper.model.QueryArgument;
+import com.jet.sql.codegen.wrapper.model.ResultColumns;
+import com.jet.sql.codegen.wrapper.model.SqlQuery;
+import com.jet.sql.codegen.wrapper.model.WrapperConfig;
 import org.slf4j.Logger;
 
 import java.io.BufferedOutputStream;

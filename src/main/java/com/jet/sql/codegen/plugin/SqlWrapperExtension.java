@@ -1,4 +1,4 @@
-package com.jet.plugin;
+package com.jet.sql.codegen.plugin;
 
 import org.gradle.api.file.ConfigurableFileTree;
 

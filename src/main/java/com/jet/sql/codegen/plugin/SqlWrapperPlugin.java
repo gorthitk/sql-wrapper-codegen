@@ -1,6 +1,6 @@
-package com.jet.plugin;
+package com.jet.sql.codegen.plugin;
 
-import com.jet.wrapper.SqlWrapperBuilder;
+import com.jet.sql.codegen.wrapper.SqlWrapperBuilder;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 
@@ -10,7 +10,7 @@ import org.gradle.api.Project;
  */
 public class SqlWrapperPlugin implements Plugin<Project>
 {
-    public static final String ID = "sql-wrapper-codegen";
+    public static final String ID = "com.jet.sql.codegen";
     public static final String TASK_ID = "generateSqlWrapper";
 
     @Override

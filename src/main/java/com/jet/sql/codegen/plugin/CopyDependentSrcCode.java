@@ -1,4 +1,4 @@
-package com.jet.plugin;
+package com.jet.sql.codegen.plugin;
 
 import java.io.File;
 import java.io.IOException;
