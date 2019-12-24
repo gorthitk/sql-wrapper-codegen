@@ -68,6 +68,8 @@ public class SqlWrapperBuilder
             ps.println("import com.jet.sql.codegen.QueryProcessor;");
             ps.println("import com.jet.sql.codegen.ResultSetRowContainer;");
             ps.println();
+            ps.println("import static java.sql.JDBCType.*;");
+            ps.println();
             ps.println("import java.sql.Connection;");
             ps.println("import java.sql.ResultSet;");
             ps.println();
