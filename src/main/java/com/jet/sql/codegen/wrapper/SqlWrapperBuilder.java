@@ -15,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +66,7 @@ public class SqlWrapperBuilder
             ps.println("package " + packageName + ";");
             ps.println();
             ps.println();
+            ps.println("import javax.annotation.processing.Generated;");
             ps.println("import com.jet.sql.codegen.QueryProcessor;");
             ps.println("import com.jet.sql.codegen.ResultSetRowContainer;");
             ps.println();
@@ -76,6 +78,7 @@ public class SqlWrapperBuilder
             ps.println();
 
             // *** Main query class [START] ***//
+            ps.println("@Generated(value=\"com.jet.sql.codegen.wrapper.SqlWrapperBuilder\",  date = \"" + LocalDateTime.now().toString() + "\")");
             ps.println("public class " + className);
             ps.println("{");
 

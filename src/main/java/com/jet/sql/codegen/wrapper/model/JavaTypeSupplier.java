@@ -1,5 +1,6 @@
 package com.jet.sql.codegen.wrapper.model;
 
+import javax.annotation.processing.Generated;
 import java.sql.JDBCType;
 
 /**
@@ -8,6 +9,7 @@ import java.sql.JDBCType;
  * @author tgorthi
  * @since Dec 2019
  */
+@Generated(value="com.jet.sql.codegen.wrapper.SqlWrapperBuilder",  date = "")
 public class JavaTypeSupplier
 {
     public static String get(final JDBCType jdbcType)
