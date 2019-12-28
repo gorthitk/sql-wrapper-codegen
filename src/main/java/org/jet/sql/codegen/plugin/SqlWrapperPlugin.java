@@ -1,5 +1,6 @@
 package org.jet.sql.codegen.plugin;
 
+import org.jet.sql.codegen.wrapper.ProcessorCodeGen;
 import org.jet.sql.codegen.wrapper.SqlWrapperBuilder;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -21,7 +22,12 @@ public class SqlWrapperPlugin implements Plugin<Project>
         final SqlWrapperBuilder wrapperBuilder = new SqlWrapperBuilder();
 
         project.task(TASK_ID)
-                .doFirst(task ->
+                .doFirst(task -> {
+                    final String relativeDirectoryPath = project.file(extension.generatedFileDirectory).getPath();
+                    ProcessorCodeGen codeGen = new ProcessorCodeGen();
+                    codeGen.run(relativeDirectoryPath, project.getLogger());
+                })
+                .doLast(task ->
                 {
                     final String relativeDirectoryPath = project.file(extension.generatedFileDirectory).getPath();
                     extension.sources.forEach(file -> wrapperBuilder.run(file.getPath(), relativeDirectoryPath, project.getLogger()));

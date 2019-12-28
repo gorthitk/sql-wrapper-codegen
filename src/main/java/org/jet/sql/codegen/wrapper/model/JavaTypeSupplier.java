@@ -1,6 +1,5 @@
 package org.jet.sql.codegen.wrapper.model;
 
-import javax.annotation.processing.Generated;
 import java.sql.JDBCType;
 
 /**
@@ -9,7 +8,6 @@ import java.sql.JDBCType;
  * @author tgorthi
  * @since Dec 2019
  */
-@Generated(value="com.jet.sql.codegen.wrapper.SqlWrapperBuilder",  date = "")
 public class JavaTypeSupplier
 {
     public static String get(final JDBCType jdbcType)
@@ -37,6 +35,8 @@ public class JavaTypeSupplier
                 return "java.lang.String";
             case ARRAY:
                 return "java.lang.Object[]";
+            case DATE:
+                return "java.sql.Date";
             case TIME:
             case TIME_WITH_TIMEZONE:
                 return "java.sql.Time";

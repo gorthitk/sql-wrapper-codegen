@@ -1,12 +1,13 @@
 package org.jet.sql.codegen.wrapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import org.jet.sql.codegen.ObjectMapperFactory;
 import org.jet.sql.codegen.wrapper.model.JavaTypeSupplier;
 import org.jet.sql.codegen.wrapper.model.QueryArgument;
 import org.jet.sql.codegen.wrapper.model.ResultColumns;
 import org.jet.sql.codegen.wrapper.model.SqlQuery;
 import org.jet.sql.codegen.wrapper.model.WrapperConfig;
+import org.jet.sql.codegen.wrapper.util.WrapperFileUtils;
 import org.slf4j.Logger;
 
 import java.io.BufferedOutputStream;
@@ -14,7 +15,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public class SqlWrapperBuilder
 {
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper(new YAMLFactory());
+    private static final ObjectMapper OBJECT_MAPPER = ObjectMapperFactory.create();
 
     private WrapperConfig _parse(final String pathToYamlSqlFile, final Logger logger)
     {
@@ -48,7 +48,7 @@ public class SqlWrapperBuilder
         final SqlQuery[] queries = sqlWrapperConfig.getQueries();
 
         final List<String> listOfQueryRunners = new ArrayList<>();
-        final String dir = _createAndGetGeneratedClassesPath(packageName, relativeDirectoryPath, logger);
+        final String dir = WrapperFileUtils.createAndGetGeneratedClassesPath(packageName, relativeDirectoryPath, logger);
 
         if (queries == null || queries.length == 0)
         {
@@ -204,28 +204,6 @@ public class SqlWrapperBuilder
             logger.error("Failed to generate java class for file config : " + sqlWrapperConfig.toString());
             e.printStackTrace();
         }
-    }
-
-
-    private String _createAndGetGeneratedClassesPath(final String packageName, final String relativeDirectoryPath, final Logger logger)
-    {
-        final String absoluteDirectoryPath = String.join(File.separator,
-                Paths.get(relativeDirectoryPath).toAbsolutePath().toString(),
-                packageName);
-
-        final File directory = new File(absoluteDirectoryPath);
-        if (!directory.exists())
-        {
-            boolean created = directory.mkdirs();
-            if (!created)
-            {
-                throw new RuntimeException("Unable to create directory at : [" + directory + "]");
-            }
-        }
-
-        logger.info("** ==== Writing generated classes to : [ " + absoluteDirectoryPath + "] ==== **");
-
-        return absoluteDirectoryPath;
     }
 
     public void run(final String path, final String relativeDirectoryPath, final Logger logger)
