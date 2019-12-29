@@ -1,0 +1,74 @@
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
+/* !!! Auto generated class by SqlWrapperBuilder , do not edit manually. !!! */
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
+
+package {{packageName}};
+
+import javax.annotation.processing.Generated;
+import org.jet.sql.codegen.QueryProcessor;
+import org.jet.sql.codegen.ResultSetRowContainer;
+
+import static java.sql.JDBCType.*;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+
+@Generated(value="com.jet.sql.codegen.wrapper.SqlWrapperBuilder",  date = "{{generatedDate}}")
+public class {{className}}
+{
+    {{#queries}}
+        public static final class {{className}}ResultRow extends ResultSetRowContainer
+        {
+            private {{className}}ResultRow (final ResultSet resultSet)
+            {
+                super(resultSet);
+            }
+
+            {{#results}}
+            public {{javaReturnType}} {{evaluateAndGetResultSetAccessorMethodName}}()
+            {
+                return ({{javaReturnType}}) getValueByName("{{name}}");
+            }
+
+            {{/results}}
+        }
+
+        public static final class {{className}}QueryRunner extends QueryProcessor<{{className}}ResultRow>
+        {
+            private static final String {{name}} =  "{{sql}}";
+
+            private {{className}}QueryRunner()
+            {
+                super({{name}}, {{className}}ResultRow::new);
+            }
+
+            public {{className}}QueryRunner connection(final Connection connection)
+            {
+                setConnection(connection);
+                return this;
+            }
+
+            {{#arguments}}
+
+            public {{className}}QueryRunner {{evaluateAndGetArgumentSetterMethodName}}(final {{javaReturnType}} value)
+            {
+                addParam({{index}}, {{type}}, value);
+                return this;
+            }
+
+            {{/arguments}}
+        }
+    {{/queries}}
+
+    public static class Runners
+    {
+        {{#queries}}
+
+        public static  {{className}}QueryRunner {{className}}QueryRunner()
+        {
+            return new {{className}}QueryRunner();
+        }
+
+        {{/queries}}
+    }
+}

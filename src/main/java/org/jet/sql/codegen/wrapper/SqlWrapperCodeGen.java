@@ -1,8 +1,14 @@
 package org.jet.sql.codegen.wrapper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
+import org.jet.sql.codegen.ObjectMapperFactory;
+import org.jet.sql.codegen.wrapper.model.QueryArgument;
+import org.jet.sql.codegen.wrapper.model.ResultColumns;
+import org.jet.sql.codegen.wrapper.model.SqlQuery;
+import org.jet.sql.codegen.wrapper.model.WrapperConfig;
 import org.jet.sql.codegen.wrapper.util.WrapperFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -10,52 +16,69 @@ import org.slf4j.Marker;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.stream.Stream;
 
-/**
- * @author tgorthi
- * @since December 2019
- */
-public class ProcessorCodeGen
+public class SqlWrapperCodeGen
 {
-    private static final String PACKAGE_NAME = "org.jet.sql.codegen";
-    private static final Map<String, String> TEMPLATE_BY_CLASS_NAME = Map.of(
-            "QueryProcessor", "codegen/QueryProcessor.mustache",
-            "ResultSetRowContainer", "codegen/ResultSetRowContainer.mustache"
-    );
+    private static final ObjectMapper OBJECT_MAPPER = ObjectMapperFactory.create();
 
-    private void _process(final String relativeDirectoryPath, final Logger logger)
+    private WrapperConfig _parse(final String pathToYamlSqlFile, final Logger logger)
     {
-        final String dir = WrapperFileUtils.createAndGetGeneratedClassesPath(PACKAGE_NAME, relativeDirectoryPath,
-                logger);
-        final Map<String, String> classMetaData = Map.of("generatedDate", LocalDateTime.now().toString());
-
-        TEMPLATE_BY_CLASS_NAME.forEach((className, template) ->
+        try
         {
-            final File outputClass = new File(dir, className + ".java");
-            try
-            {
-                final FileWriter fileWriter = new FileWriter(outputClass);
-                final MustacheFactory factory = new DefaultMustacheFactory();
-                final Mustache m = factory.compile(template);
-                m.execute(fileWriter, classMetaData).flush();
-            }
-            catch (IOException e)
-            {
-                logger.error("Failed to generate processor code");
-                throw new RuntimeException();
-            }
-        });
+            logger.info("Parsing file at " + pathToYamlSqlFile);
+            return OBJECT_MAPPER.readValue(new File(pathToYamlSqlFile), WrapperConfig.class);
+        }
+        catch (Throwable e)
+        {
+            throw new RuntimeException("Failed to parse yaml file : [ " + pathToYamlSqlFile + " ]", e);
+        }
+    }
+
+    private void _process(final WrapperConfig sqlWrapperConfig, final String relativeDirectoryPath, final Logger logger)
+    {
+        final String packageName = sqlWrapperConfig.getPackageName();
+        final String className = sqlWrapperConfig.getClassName();
+
+
+        final String dir = WrapperFileUtils.createAndGetGeneratedClassesPath(packageName, relativeDirectoryPath, logger);
+
+
+        final File outputClass = new File(dir, className + ".java");
+        try
+        {
+            final FileWriter fileWriter = new FileWriter(outputClass);
+            final MustacheFactory factory = new DefaultMustacheFactory();
+            final Mustache m = factory.compile("codegen/SqlWrapper.mustache");
+            m.execute(fileWriter, sqlWrapperConfig).flush();
+        }
+        catch (IOException e)
+        {
+            logger.error("Failed to generate processor code");
+            throw new RuntimeException();
+        }
 
     }
 
-    public void run(final String relativeDirectoryPath, final Logger logger)
+    public void run(final String path, final String relativeDirectoryPath, final Logger logger)
+    {
+        logger.info("========================");
+        logger.info("Building Sql Wrapper");
+
+        final WrapperConfig config = _parse(path, logger);
+
+        _process(config, relativeDirectoryPath, logger);
+
+        logger.info("Finished Building Sql Wrapper");
+        logger.info("========================");
+    }
+
+    public void run(final WrapperConfig sqlWrapperConfig, final String relativeDirectoryPath, final Logger logger)
     {
         logger.info("========================");
         logger.info("Generating Sql Wrapper processing classes.");
 
-        _process(relativeDirectoryPath, logger);
+        _process(sqlWrapperConfig, relativeDirectoryPath, logger);
 
         logger.info("Finished Building Sql Wrapper");
         logger.info("========================");
@@ -63,8 +86,22 @@ public class ProcessorCodeGen
 
     public static void main(String[] args)
     {
-        ProcessorCodeGen codeGen = new ProcessorCodeGen();
-        codeGen.run("src/gen", new Logger()
+        SqlWrapperCodeGen codeGen = new SqlWrapperCodeGen();
+        WrapperConfig config = new WrapperConfig("com.test", "CompanyQueries", new SqlQuery(
+                "add_company",
+                "INSERT INTO COMPANY (NAME, ID) VALUES arg_company_name,arg_company_id RETURNING ID, NAME",
+                new QueryArgument[]{
+                        new QueryArgument("arg_company_name", "varchar"),
+                        new QueryArgument("arg_company_id", "integer"),
+                },
+                new ResultColumns[]{
+                        new ResultColumns("id", "integer"),
+                        new ResultColumns("name", "varchar")
+                }
+        ));
+
+        Stream.of(config.getQueries()).forEach(SqlQuery::preProcess);
+        codeGen._process(config, "src/gen", new Logger()
         {
             @Override public String getName()
             {

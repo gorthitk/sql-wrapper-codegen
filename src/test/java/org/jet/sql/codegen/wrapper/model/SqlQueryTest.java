@@ -4,8 +4,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import java.util.Map;
-
 /**
  * Unit tests for {@link SqlQuery}
  *
@@ -42,16 +40,23 @@ public class SqlQueryTest
                 results
         );
 
-        Map<String, Integer> paramPosition = query.evaluateAndGetArgumentPositions();
+        query.preProcess();
 
-        Assert.assertNotNull(paramPosition);
-        Assert.assertEquals(paramPosition.size(), 2);
-
-        Assert.assertTrue(paramPosition.containsKey("arg_company_name"));
-        Assert.assertTrue(paramPosition.containsKey("arg_company_id"));
-
-        Assert.assertEquals(paramPosition.get("arg_company_name"), Integer.valueOf(1));
-        Assert.assertEquals(paramPosition.get("arg_company_id"), Integer.valueOf(2));
+        for (QueryArgument argument : query.getArguments())
+        {
+            if (argument.getName().equals("arg_company_name"))
+            {
+                Assert.assertEquals(argument.getIndex(), 1);
+            }
+            else if (argument.getName().equals("arg_company_id"))
+            {
+                Assert.assertEquals(argument.getIndex(), 2);
+            }
+            else
+            {
+                throw new RuntimeException("Invalid argument" + argument.getName());
+            }
+        }
     }
 
     @Test
@@ -64,9 +69,10 @@ public class SqlQueryTest
                 results
         );
 
-        final String parsedSql = query.convert();
+        query.preProcess();
+        final String parsedSql = query.getSql();
 
         Assert.assertEquals(parsedSql, "INSERT INTO COMPANY (NAME ,  ID) VALUES ? , ? RETURNING ID ,  NAME ");
-        Assert.assertEquals(query.parseAndCreateClassName(), "CompanyQueries");
+        Assert.assertEquals(query.getClassName(), "CompanyQueries");
     }
 }

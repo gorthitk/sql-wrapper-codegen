@@ -89,6 +89,11 @@ public class ResultColumns
         return sb.toString();
     }
 
+    public String getJavaReturnType()
+    {
+        return JavaTypeSupplier.get(getType());
+    }
+
     @Override
     public String toString()
     {

@@ -3,6 +3,9 @@ package org.jet.sql.codegen.wrapper.model;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author tgorthi
@@ -19,10 +22,11 @@ public class SqlQuery
     /**
      * Default constructor used by JAXB Object parser.
      */
-    public SqlQuery()
-    {
-    }
+    public SqlQuery() {}
 
+    /**
+     * Constructor only used for testing purposes.
+     */
     public SqlQuery(String name, String sql, QueryArgument[] arguments, ResultColumns[] results)
     {
         this.name = name;
@@ -33,7 +37,7 @@ public class SqlQuery
 
     public String getName()
     {
-        return name;
+        return name.toUpperCase();
     }
 
     public String getSql()
@@ -51,14 +55,19 @@ public class SqlQuery
         return results;
     }
 
-    public String convert()
+    public void preProcess()
     {
+        final Map<String, QueryArgument> argumentMap = Stream.of(arguments)
+                .collect(Collectors.toMap(QueryArgument::getName, Function.identity()));
+
         final StringBuilder sb = new StringBuilder();
+        int index = 1;
         for (String s : sql.replace(",", " , ").split(" "))
         {
-            String[] withCommasRemoved = s.split(",");
             if (s.startsWith(QUERY_PARAM_PREFIX))
             {
+                argumentMap.get(s).setIndex(index);
+                index++;
                 sb.append("?");
             }
             else
@@ -68,26 +77,10 @@ public class SqlQuery
             sb.append(" ");
         }
 
-        return sb.toString();
+        sql = sb.toString();
     }
 
-    public Map<String, Integer> evaluateAndGetArgumentPositions()
-    {
-        final Map<String, Integer> variables = new HashMap<>();
-        int index = 1;
-        for (String s : sql.split("\\s*(,|\\s)\\s*"))
-        {
-            if (s.startsWith(QUERY_PARAM_PREFIX))
-            {
-                variables.put(s, index);
-                index++;
-            }
-        }
-
-        return variables;
-    }
-
-    public String parseAndCreateClassName()
+    public String getClassName()
     {
         final StringBuilder sb = new StringBuilder();
 

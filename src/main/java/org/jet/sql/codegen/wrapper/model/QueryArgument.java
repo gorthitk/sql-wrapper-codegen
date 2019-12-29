@@ -12,6 +12,7 @@ public class QueryArgument
 {
     private String type;
     private String name;
+    private int index;
 
     /**
      * Default constructor used by JAXB Object parser.
@@ -50,6 +51,16 @@ public class QueryArgument
         }
     }
 
+    public void setIndex(int index)
+    {
+        this.index = index;
+    }
+
+    public int getIndex()
+    {
+        return index;
+    }
+
     /**
      * @return Returns a string in special format after
      * - removing the {@link SqlQuery#QUERY_PARAM_PREFIX} prefix
@@ -77,6 +88,7 @@ public class QueryArgument
             if (c == '_')
             {
                 previousCharWasUnderscore = true;
+                sb.append(c);
                 continue;
             }
 
@@ -95,7 +107,12 @@ public class QueryArgument
             throw new RuntimeException("Invalid argument name : " + name);
         }
 
-        return sb.toString();
+        return sb.toString().toUpperCase();
+    }
+
+    public String getJavaReturnType()
+    {
+        return JavaTypeSupplier.get(getType());
     }
 
     @Override
