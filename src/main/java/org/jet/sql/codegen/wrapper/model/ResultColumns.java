@@ -91,7 +91,7 @@ public class ResultColumns
 
     public String getJavaReturnType()
     {
-        return JavaTypeSupplier.get(getType());
+        return JavaTypeLookUp.get(getType());
     }
 
     @Override

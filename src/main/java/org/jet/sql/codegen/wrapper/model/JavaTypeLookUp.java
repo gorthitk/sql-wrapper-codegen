@@ -8,7 +8,7 @@ import java.sql.JDBCType;
  * @author tgorthi
  * @since Dec 2019
  */
-public class JavaTypeSupplier
+public class JavaTypeLookUp
 {
     public static String get(final JDBCType jdbcType)
     {
