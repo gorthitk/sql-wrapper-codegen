@@ -31,6 +31,16 @@ repositories {
     jcenter()
 }
 
+sourceSets {
+    main{
+        java {
+            srcDir 'src/main/java'
+            srcDir 'src/gen'
+        }
+    }
+}
+
+
 dependencies {
     compile gradleApi()
 

@@ -33,6 +33,7 @@ public abstract class QueryProcessor<T extends ResultSetRowContainer>
     private final ResultSetContainerSupplier<T> resultSetContainerSupplier;
     private Connection connection;
     private int fetchSize = -1;
+    private List<List<BindVariable>> batches = null;
 
     public QueryProcessor(final String sql, final ResultSetContainerSupplier<T> resultSetContainerSupplier)
     {
@@ -47,6 +48,17 @@ public abstract class QueryProcessor<T extends ResultSetRowContainer>
             throw new IllegalArgumentException("Fetch size must be greater than 0");
         }
         this.fetchSize = fetchSize;
+    }
+
+    public void addBatch()
+    {
+        if (batches == null)
+        {
+            batches = new ArrayList<>();
+        }
+
+        batches.add(params);
+        params.clear();
     }
 
     /**
@@ -95,16 +107,50 @@ public abstract class QueryProcessor<T extends ResultSetRowContainer>
 
     public T executeAndReturnIterator() throws SQLException
     {
+        if (batches != null)
+        {
+            throw new RuntimeException("Use executeBatch method to run batched query");
+        }
+
         final PreparedStatement ps = _createPreparedStatement();
         return resultSetContainerSupplier.supply(ps.executeQuery());
     }
 
     public Stream <T> execute() throws SQLException
     {
+        if (batches != null)
+        {
+            throw new RuntimeException("Use executeBatch method to run batched query");
+        }
+
         final PreparedStatement ps = _createPreparedStatement();
         final T iterator = resultSetContainerSupplier.supply(ps.executeQuery());
 
         return (Stream<T>) StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, 0), false);
+    }
+
+    public int[] executeBatch() throws SQLException //3
+    {
+        if (!params.isEmpty())
+        {
+            throw new RuntimeException("No batches were added");
+        }
+
+        if (batches == null || batches.isEmpty())
+        {
+            throw new RuntimeException("No batches were added");
+        }
+
+        final PreparedStatement ps = _createPreparedStatement();
+
+        for (List<BindVariable> batch : batches)
+        {
+            batch.forEach((p) -> p.accept(ps, connection));
+            ps.addBatch();
+        }
+
+        batches = null;
+        return ps.executeBatch();
     }
 
     public interface ResultSetContainerSupplier<T extends ResultSetRowContainer>
