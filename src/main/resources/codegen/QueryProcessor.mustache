@@ -116,7 +116,7 @@ public abstract class QueryProcessor<T extends ResultSetRowContainer>
         return resultSetContainerSupplier.supply(ps.executeQuery());
     }
 
-    public Stream <T> execute() throws SQLException
+    public Stream <T> executeAsStream() throws SQLException
     {
         if (batches != null)
         {
@@ -127,6 +127,12 @@ public abstract class QueryProcessor<T extends ResultSetRowContainer>
         final T iterator = resultSetContainerSupplier.supply(ps.executeQuery());
 
         return (Stream<T>) StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, 0), false);
+    }
+
+    public boolean execute() throws SQLException
+    {
+        final PreparedStatement ps = _createPreparedStatement();
+        return ps.execute();
     }
 
     public int[] executeBatch() throws SQLException //3
