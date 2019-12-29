@@ -23,7 +23,7 @@ public class QueryArgumentTest
     public void testGetBindVariableSetterMethodName()
     {
         final QueryArgument argument = new QueryArgument("arg_test_param", "varchar");
-        Assert.assertEquals(argument.evaluateAndGetArgumentSetterMethodName(), "testParam");
+        Assert.assertEquals(argument.evaluateAndGetArgumentSetterMethodName(), "TEST_PARAM");
     }
 
 
@@ -38,7 +38,7 @@ public class QueryArgumentTest
     public void testGetBindVariableSetterMethodNameWithNumericCharacters()
     {
         final QueryArgument argument = new QueryArgument("arg_test_param_1", "varchar");
-        Assert.assertEquals(argument.evaluateAndGetArgumentSetterMethodName(), "testParam1");
+        Assert.assertEquals(argument.evaluateAndGetArgumentSetterMethodName(), "TEST_PARAM_1");
     }
 
     @Test(expectedExceptions = RuntimeException.class)

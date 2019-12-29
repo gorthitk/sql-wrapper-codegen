@@ -87,6 +87,10 @@ public class QueryArgument
             final char c = name.charAt(i);
             if (c == '_')
             {
+                if (previousCharWasUnderscore)
+                {
+                    throw new RuntimeException("Invalid argument name, underscore must be followed by a valid alphanumeric character");
+                }
                 previousCharWasUnderscore = true;
                 sb.append(c);
                 continue;
