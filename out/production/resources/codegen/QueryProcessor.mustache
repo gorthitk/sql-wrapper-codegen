@@ -28,11 +28,21 @@ public abstract class QueryProcessor<T extends ResultSetRowContainer>
     private final List<BindVariable> params = new ArrayList<>();
     private final ResultSetContainerSupplier<T> resultSetContainerSupplier;
     private Connection connection;
+    private int fetchSize = -1;
 
     public QueryProcessor(final String sql, final ResultSetContainerSupplier<T> resultSetContainerSupplier)
     {
         this.sql = sql;
         this.resultSetContainerSupplier = resultSetContainerSupplier;
+    }
+
+    public void setFetchSize(final int fetchSize)
+    {
+        if (fetchSize <= 0)
+        {
+            throw new IllegalArgumentException("Fetch size must be greater than 0");
+        }
+        this.fetchSize = fetchSize;
     }
 
     /**
@@ -70,7 +80,10 @@ public abstract class QueryProcessor<T extends ResultSetRowContainer>
     private PreparedStatement _createPreparedStatement() throws SQLException
     {
         final PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setFetchSize(1000);
+        if (fetchSize > -1)
+        {
+            ps.setFetchSize(fetchSize);
+        }
 
         this.params.forEach((p) -> p.accept(ps, connection));
         return ps;
