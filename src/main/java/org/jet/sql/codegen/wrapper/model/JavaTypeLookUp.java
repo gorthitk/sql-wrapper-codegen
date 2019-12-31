@@ -21,7 +21,7 @@ public class JavaTypeLookUp
             case SMALLINT:
                 return "java.lang.Short";
             case BIGINT:
-                return "java.math.BigInteger";
+                return "java.lang.Long";
             case FLOAT:
                 return "java.lang.Float";
             case DECIMAL:
