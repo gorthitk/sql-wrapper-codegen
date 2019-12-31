@@ -47,6 +47,14 @@ public class WrapperConfig
         return LocalDateTime.now().toString();
     }
 
+    public void preProcess()
+    {
+        for (SqlQuery query : queries)
+        {
+            query.preProcess();
+        }
+    }
+
     @Override
     public String toString()
     {

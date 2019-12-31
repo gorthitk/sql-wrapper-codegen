@@ -57,7 +57,7 @@ public abstract class QueryProcessor<T extends ResultSetRowContainer>
             batches = new ArrayList<>();
         }
 
-        batches.add(params);
+        batches.add(List.copyOf(params));
         params.clear();
     }
 
@@ -135,7 +135,7 @@ public abstract class QueryProcessor<T extends ResultSetRowContainer>
         return ps.execute();
     }
 
-    public int[] executeBatch() throws SQLException //3
+    public int[] executeBatch() throws SQLException
     {
         if (!params.isEmpty())
         {

@@ -49,6 +49,7 @@ public class SqlWrapperCodeGen
             final FileWriter fileWriter = new FileWriter(outputClass);
             final MustacheFactory factory = new DefaultMustacheFactory();
             final Mustache m = factory.compile("codegen/SqlWrapper.mustache");
+            sqlWrapperConfig.preProcess();
             m.execute(fileWriter, sqlWrapperConfig).flush();
         }
         catch (IOException e)

@@ -1,6 +1,7 @@
 package org.jet.sql.codegen.wrapper.model;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -57,8 +58,8 @@ public class SqlQuery
 
     public void preProcess()
     {
-        final Map<String, QueryArgument> argumentMap = Stream.of(arguments)
-                .collect(Collectors.toMap(QueryArgument::getName, Function.identity()));
+        final Map<String, QueryArgument> argumentMap = arguments != null ? Stream.of(arguments)
+                .collect(Collectors.toMap(QueryArgument::getName, Function.identity())) : Collections.emptyMap();
 
         final StringBuilder sb = new StringBuilder();
         int index = 1;
@@ -66,6 +67,10 @@ public class SqlQuery
         {
             if (s.startsWith(QUERY_PARAM_PREFIX))
             {
+                if (!argumentMap.containsKey(s))
+                {
+                    throw new RuntimeException("The following argument is not decalred in the configuration : " + s);
+                }
                 argumentMap.get(s).setIndex(index);
                 index++;
                 sb.append("?");
