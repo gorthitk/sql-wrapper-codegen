@@ -257,6 +257,10 @@ public abstract class QueryProcessor<T extends ResultSetRowContainer>
                     {
                         preparedStatement.setTimestamp(index, (Timestamp) value);
                     }
+                    case NUMERIC:
+                    {
+                        preparedStatement.setBigDecimal(index, (BigDecimal) value);
+                    }
                     default:
                     {
                         throw new RuntimeException("JDBC Type " + type + " is currently not supported");
