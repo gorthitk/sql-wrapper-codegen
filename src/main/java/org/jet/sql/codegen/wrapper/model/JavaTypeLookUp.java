@@ -33,6 +33,8 @@ public class JavaTypeLookUp
             case VARCHAR:
             case LONGVARCHAR:
                 return "java.lang.String";
+            case NUMERIC:
+                return "java.math.BigDecimal";
             case ARRAY:
                 return "java.lang.Object[]";
             case DATE:
