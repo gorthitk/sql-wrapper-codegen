@@ -248,19 +248,23 @@ public abstract class QueryProcessor<T extends ResultSetRowContainer>
                     case TIME:
                     {
                         preparedStatement.setTime(index, (Time) value);
+                        return;
                     }
                     case DATE:
                     {
                         preparedStatement.setDate(index, (Date) value);
+                        return;
                     }
                     case TIMESTAMP:
                     case TIMESTAMP_WITH_TIMEZONE:
                     {
                         preparedStatement.setTimestamp(index, (Timestamp) value);
+                        return;
                     }
                     case NUMERIC:
                     {
                         preparedStatement.setBigDecimal(index, (BigDecimal) value);
+                        return;
                     }
                     default:
                     {
