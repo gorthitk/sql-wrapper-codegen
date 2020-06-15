@@ -1,6 +1,7 @@
 plugins {
     id 'java-gradle-plugin'
     id 'maven-publish'
+    id "com.gradle.plugin-publish" version "0.12.0"
 }
 
 repositories {
@@ -21,14 +22,35 @@ publishing {
     }
 }
 
+// Use java-gradle-plugin to generate plugin descriptors and specify plugin ids
+gradlePlugin {
+    plugins {
+        greetingsPlugin {
+            id = 'org.jet.sql.codegen'
+            implementationClass = 'org.jet.sql.codegen.plugin.SqlWrapperPlugin'
+        }
+    }
+}
+
+// The configuration example below shows the minimum required properties
+// configured to publish your plugin to the plugin portal
+pluginBundle {
+    website = 'https://jetsasank.github.io/sql-wrapper-codegen/'
+    vcsUrl = 'https://github.com/gradle/gradle'
+    description = 'Plugin to generate type safe java wrapper classes for running JDBC Prepared Statement'
+    tags = ['java', 'jdbc' ,'type-safe', 'generate']
+
+    plugins {
+        greetingsPlugin {
+            displayName = 'Java SQL Type safe wrapper generate plugin'
+        }
+    }
+}
+
 jar {
     manifest {
         attributes('Implementation-Title': project.name, 'Implementation-Version': project.version)
     }
-}
-
-repositories {
-    jcenter()
 }
 
 dependencies {
