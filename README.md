@@ -2,7 +2,7 @@
 
 ![Language](https://img.shields.io/badge/language-Java-brightgreen.svg)&nbsp;
 
-Gradle plugin to generate boiler-plate code for running JDBC queries in java.
+Gradle plugin to reduce boiler-plate code for running JDBC queries in java and improve [type safety](https://en.wikipedia.org/wiki/Type_safety) while running [PreparedStatements](https://docs.oracle.com/javase/7/docs/api/java/sql/PreparedStatement.html) in java.
 
 This plugin requires simple YAML files and a gradle plugin to generate wrapper java classes that abstract away the boiler-plate code.
 
