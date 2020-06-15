@@ -1,10 +1,13 @@
 package org.jet.sql.codegen.wrapper.util;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
+/**
+ * @author tgorthi
+ * @since Jun 2020
+ */
 @FunctionalInterface
 public interface ConnectionSupplier
 {
-    public Connection get(String name) throws SQLException;
+    Connection get();
 }

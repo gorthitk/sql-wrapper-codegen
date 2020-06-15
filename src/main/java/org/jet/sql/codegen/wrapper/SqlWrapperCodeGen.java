@@ -9,13 +9,11 @@ import org.jet.sql.codegen.wrapper.model.SqlQuery;
 import org.jet.sql.codegen.wrapper.model.WrapperConfig;
 import org.jet.sql.codegen.wrapper.model.YamlConfig;
 import org.jet.sql.codegen.wrapper.util.ConnectionSupplier;
-import org.jet.sql.codegen.wrapper.util.JDBCConnectionSupplier;
 import org.jet.sql.codegen.wrapper.util.WrapperFileUtils;
 import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.sql.SQLException;
 
 /**
  * @author tgorthi
@@ -29,26 +27,34 @@ public class SqlWrapperCodeGen
     {
         try
         {
-            logger.info("Parsing file at " + sqlFile.getPath());
+            logger.info("-------------------------------------------------------------------------------------");
+            logger.info("-------------------- Parsing file at : " + sqlFile.getPath() + "---------------------");
+            logger.info("-------------------------------------------------------------------------------------");
+
             return OBJECT_MAPPER.readValue(sqlFile, YamlConfig.class);
         }
         catch (Throwable e)
         {
-            throw new RuntimeException("Failed to parse yaml file : [ " + sqlFile.getPath() + " ]", e);
+            throw new RuntimeException("-------------------- Failed to parse yaml file : [ " + sqlFile.getPath() + " " +
+                    "] --------------------", e);
         }
     }
 
-    private void _process(final YamlConfig yamlConfig, final String relativeDirectoryPath, final Logger logger) throws SQLException
+    private void _process(final YamlConfig yamlConfig,
+                          final String relativeDirectoryPath,
+                          final ConnectionSupplier connectionSupplier,
+                          final Logger logger)
     {
         final String packageName = yamlConfig.getPackageName();
         final String className = yamlConfig.getClassName();
 
 
-        final String dir = WrapperFileUtils.createAndGetGeneratedClassesPath(packageName, relativeDirectoryPath, logger);
+        final String dir = WrapperFileUtils.createAndGetGeneratedClassesPath(packageName,
+                relativeDirectoryPath,
+                logger);
 
 
         final File outputClass = new File(dir, className + ".java");
-        final ConnectionSupplier connectionSupplier = new JDBCConnectionSupplier();
         try
         {
             final FileWriter fileWriter = new FileWriter(outputClass);
@@ -59,20 +65,25 @@ public class SqlWrapperCodeGen
             final SqlQuery[] sqlQueries = new SqlQuery[rawQueries.length];
             for (int i = 0; i < rawQueries.length; i++)
             {
-                sqlQueries[i] = QueryParser.convert(rawQueries[i].getName(), rawQueries[i].getSql(), connectionSupplier.get(null));
+                sqlQueries[i] = QueryParser.convert(rawQueries[i].getName(),
+                        rawQueries[i].getSql(),
+                        connectionSupplier.get());
             }
 
             m.execute(fileWriter, new WrapperConfig(packageName, className, sqlQueries)).flush();
         }
         catch (Exception e)
         {
-            logger.error("Failed to generate processor code");
+            logger.error("-------------------- Failed to generate processor code --------------------");
             throw new RuntimeException(e);
         }
 
     }
 
-    public void run(final File sqlFile, final String relativeDirectoryPath, final Logger logger)
+    public void run(
+            final File sqlFile, final String relativeDirectoryPath,
+            final ConnectionSupplier connectionSupplier, final Logger logger
+    )
     {
         logger.info("-------------------------------------------------------------------------------------");
         logger.info("------------------------------- Building Sql Wrapper --------------------------------");
@@ -81,15 +92,7 @@ public class SqlWrapperCodeGen
         logger.info("----Generating sql wrapper code gen for file :" + sqlFile.getPath() + "--------");
 
         final YamlConfig config = _parse(sqlFile, logger);
-
-        try
-        {
-            _process(config, relativeDirectoryPath, logger);
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
+        _process(config, relativeDirectoryPath, connectionSupplier, logger);
 
         logger.info("-------------------------------------------------------------------------------------");
         logger.info("-------------------------- Finished Building Sql Wrapper ----------------------------");

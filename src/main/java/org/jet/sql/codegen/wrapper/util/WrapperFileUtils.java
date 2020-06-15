@@ -20,7 +20,7 @@ public class WrapperFileUtils
         final File directory = new File(absoluteDirectoryPath);
         if (!directory.exists() && !directory.mkdirs())
         {
-            throw new RuntimeException("Unable to create directory at : [" + directory + "]");
+            throw new RuntimeException("-------------------- Unable to create directory at : [" + directory + "] --------------------");
         }
 
         logger.info("-------------------------------------------------------------------------------------");
