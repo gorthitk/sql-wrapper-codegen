@@ -36,7 +36,7 @@ gradlePlugin {
 // configured to publish your plugin to the plugin portal
 pluginBundle {
     website = 'https://jetsasank.github.io/sql-wrapper-codegen/'
-    vcsUrl = 'https://github.com/gradle/gradle'
+    vcsUrl = 'https://github.com/jetsasank/sql-wrapper-codegen'
     description = 'Plugin to generate type safe java wrapper classes for running JDBC Prepared Statement'
     tags = ['java', 'jdbc' ,'type-safe', 'generate']
 
