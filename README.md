@@ -19,6 +19,10 @@ plugins {
 sqlWrapperConfig {
     sources = fileTree(dir: 'src/main/resources/sql') // source directory for YAML sql configuration
     generatedFileDirectory = file('src/gen/java') // output directory for generated classes.
+    userName = 'testUser' // user name required to connect to the database
+    password = 'testPassword' // password required to connect to the database
+    type = 'postgresql' or 'mysql' // type of the database to connect. Currently only supports postgres and mysql
+    host = 'testHost' // hostname where the database server is deployed.
 }
 
 ```
@@ -33,14 +37,6 @@ className: EmployeeQueries
 queries:
   - name: 'get_all_employees'
     sql: 'SELECT ID, NAME FROM EMPLOYEE WHERE ID = arg_id'
-    arguments:
-      - name: arg_id
-      - type: integer
-    results:
-      - name: name
-        type: varchar
-      - name: id
-        type: integer
 ```
 
 - Step 3 : Generate required java classes by running the gradle plugin task

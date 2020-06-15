@@ -3,8 +3,9 @@ package org.jet.sql.codegen.wrapper;
 import org.jet.sql.codegen.wrapper.model.QueryArgument;
 import org.jet.sql.codegen.wrapper.model.ResultColumns;
 import org.jet.sql.codegen.wrapper.model.SqlQuery;
+import org.jet.sql.codegen.wrapper.model.YamlConfig;
+import org.jet.sql.codegen.wrapper.util.ConnectionSupplier;
 
-import java.sql.Connection;
 import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSetMetaData;
@@ -23,9 +24,9 @@ public class QueryParser
     private static final String QUERY_PARAM_PREFIX = "arg_";
     private static final Pattern QUERY_PARAM_PATTERN = Pattern.compile(QUERY_PARAM_PREFIX + "([a-zA-Z_0-9]*)");
 
-    public static SqlQuery convert(final String name, final String sql, final Connection connection) throws SQLException
+    public static SqlQuery convert(final YamlConfig.RawSql rawSql, final ConnectionSupplier connectionSupplier) throws SQLException
     {
-        String formattedSql = sql;
+        String formattedSql = rawSql.getSql();
         final Matcher matcher = QUERY_PARAM_PATTERN.matcher(formattedSql);
 
         final List<String> argumentNames = new ArrayList<>();
@@ -37,11 +38,22 @@ public class QueryParser
             argumentNames.add(parsedQueryParam);
         }
 
-        final PreparedStatement ps = connection.prepareStatement(formattedSql);
+        final PreparedStatement ps = connectionSupplier.get().prepareStatement(formattedSql);
 
-        return new SqlQuery(name, formattedSql, _getQueryArguments(ps, argumentNames), _getResultColumns(ps));
+        return new SqlQuery(
+                rawSql.getName(),
+                formattedSql,
+                _getQueryArguments(ps, argumentNames),
+                _getResultColumns(ps));
     }
 
+    /**
+     *
+     * @param ps -> prepared Statement that needs to executed.
+     * @param argumentNames -> user provider convenience argument names ordered by their order of appearance in the sql.
+     * @return -> Array containing meta data about each bind variable.
+     * @throws SQLException -> when shit hits the fan.
+     */
     private static QueryArgument[] _getQueryArguments(final PreparedStatement ps, final List<String> argumentNames) throws SQLException
     {
         final ParameterMetaData parameterMetaData = ps.getParameterMetaData();
@@ -63,6 +75,12 @@ public class QueryParser
         return null;
     }
 
+    /**
+     *
+     * @param ps -> prepared Statement that needs to executed.
+     * @return -> Array containing meta data about each result set column.
+     * @throws SQLException -> when shit hits the fan.
+     */
     private static ResultColumns[] _getResultColumns(final PreparedStatement ps) throws SQLException
     {
         final ResultSetMetaData resultSetMetaData = ps.getMetaData();

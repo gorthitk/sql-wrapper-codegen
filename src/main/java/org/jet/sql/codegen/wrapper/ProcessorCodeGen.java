@@ -42,7 +42,7 @@ public class ProcessorCodeGen
             }
             catch (IOException e)
             {
-                logger.error("Failed to generate processor code");
+                logger.error("------------------- Failed to generate processor code -------------------");
                 throw new RuntimeException();
             }
         });
@@ -51,12 +51,15 @@ public class ProcessorCodeGen
 
     public void run(final String relativeDirectoryPath, final Logger logger)
     {
-        logger.info("========================");
-        logger.info("Generating Sql Wrapper processing classes.");
+        logger.info("-------------------------------------------------------------------------------------");
+        logger.info("-------------------- Generating Sql Wrapper processing classes. ---------------------");
+        logger.info("-------------------------------------------------------------------------------------");
+
 
         _process(relativeDirectoryPath, logger);
 
-        logger.info("Finished Building Sql Wrapper");
-        logger.info("========================");
+        logger.info("-------------------------------------------------------------------------------------");
+        logger.info("-------------------------- Finished Building Sql Wrapper. ---------------------------");
+        logger.info("-------------------------------------------------------------------------------------");
     }
 }
