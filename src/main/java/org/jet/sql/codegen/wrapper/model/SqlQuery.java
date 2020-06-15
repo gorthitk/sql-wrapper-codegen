@@ -3,6 +3,8 @@ package org.jet.sql.codegen.wrapper.model;
 import java.util.Arrays;
 
 /**
+ * Contains processed info about the query that needs to be executed on the db along with the meta data (such as indexes, java types) about bind variables and result set.
+ *
  * @author tgorthi
  * @since December 2019
  */

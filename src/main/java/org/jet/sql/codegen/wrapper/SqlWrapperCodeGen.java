@@ -23,7 +23,7 @@ public class SqlWrapperCodeGen
 {
     private static final ObjectMapper OBJECT_MAPPER = ObjectMapperFactory.create();
 
-    private YamlConfig _parse(final File sqlFile, final Logger logger)
+    private YamlConfig[] _parse(final File sqlFile, final Logger logger)
     {
         try
         {
@@ -31,7 +31,7 @@ public class SqlWrapperCodeGen
             logger.info("-------------------- Parsing file at : " + sqlFile.getPath() + "---------------------");
             logger.info("-------------------------------------------------------------------------------------");
 
-            return OBJECT_MAPPER.readValue(sqlFile, YamlConfig.class);
+            return OBJECT_MAPPER.readValue(sqlFile, YamlConfig[].class);
         }
         catch (Throwable e)
         {
@@ -91,8 +91,12 @@ public class SqlWrapperCodeGen
 
         logger.info("----Generating sql wrapper code gen for file :" + sqlFile.getPath() + "--------");
 
-        final YamlConfig config = _parse(sqlFile, logger);
-        _process(config, relativeDirectoryPath, connectionSupplier, logger);
+        final YamlConfig[] configurations = _parse(sqlFile, logger);
+
+        for (YamlConfig config : configurations)
+        {
+            _process(config, relativeDirectoryPath, connectionSupplier, logger);
+        }
 
         logger.info("-------------------------------------------------------------------------------------");
         logger.info("-------------------------- Finished Building Sql Wrapper ----------------------------");

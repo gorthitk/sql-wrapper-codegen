@@ -1,6 +1,8 @@
 package org.jet.sql.codegen.wrapper.model;
 
 /**
+ * POJO holding data parsed from a YAML file.
+ * 
  * @author tgorthi
  * @since Jun 2020
  */

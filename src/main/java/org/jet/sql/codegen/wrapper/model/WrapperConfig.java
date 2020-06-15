@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 /**
+ * Simple POJO that encapsulates all the required info to generate wrapper classes for a prepared statement.
+ *
  * @author tgorthi
  * @since December 2019
  */

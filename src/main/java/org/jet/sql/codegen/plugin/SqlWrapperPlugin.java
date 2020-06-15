@@ -8,6 +8,11 @@ import org.jet.sql.codegen.wrapper.util.ConnectionSupplier;
 import org.jet.sql.codegen.wrapper.util.JDBCConnectionSupplier;
 
 /**
+ * Implementation of the Plugin.
+ * - Contains two tasks
+ *   1. Generate the required abstract classes or interface implementation that execute a query on the db servers and to provider a simpler interface for prepared statements.
+ *   2. Generate the required type safe Java Classes to set prepared statement bind variables (also called parameters , arguments) and type safe methods to extract result sets.
+ *
  * @author tgorthi
  * @since Dec 2019
  */

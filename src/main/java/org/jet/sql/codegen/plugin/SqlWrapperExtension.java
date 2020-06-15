@@ -5,6 +5,8 @@ import org.gradle.api.file.ConfigurableFileTree;
 import java.io.File;
 
 /**
+ * Contains Plugin configuration settings.
+ *
  * @author tgorthi
  * @since December 2019
  */
