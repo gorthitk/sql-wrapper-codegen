@@ -1,5 +1,7 @@
 # sql-wrapper-codegen [![Gradle Status](https://gradleupdate.appspot.com/jetsasank/sql-wrapper-codegen/status.svg)](https://gradleupdate.appspot.com/jetsasank/sql-wrapper-codegen/status) [![CircleCI](https://circleci.com/gh/jetsasank/sql-wrapper-codegen/tree/master.svg?style=svg)](https://circleci.com/gh/jetsasank/sql-wrapper-codegen/tree/master) [![Build Status](https://travis-ci.org/jetsasank/sql-wrapper-codegen.svg?branch=master)](https://travis-ci.org/jetsasank/sql-wrapper-codegen)
 
+![Language](https://img.shields.io/badge/language-Java-brightgreen.svg)&nbsp;
+
 Gradle plugin to generate boiler-plate code for running JDBC queries in java.
 
 This plugin requires simple YAML files and a gradle plugin to generate wrapper java classes that abstract away the boiler-plate code.
@@ -35,7 +37,7 @@ Sample Yaml file
 packageName: org.jet.test
 className: EmployeeQueries
 queries:
-  - name: 'get_all_employees'
+  - name: 'get_employee_by_id'
     sql: 'SELECT ID, NAME FROM EMPLOYEE WHERE ID = arg_id'
 ```
 
@@ -45,3 +47,41 @@ queries:
     ./gradlew generateSqlWrapper
 ```
 
+- Step 4 : Use the generated classes
+
+Once the plugin runs , it will auto generate all the required wrapper classes. Which in this example will be a class named 
+``
+ EmployeeQueries
+``
+
+under package 
+```
+    org.jet.test
+```
+
+you can then use it in your code to replace boiler plate code 
+ 
+```java
+package org.jet.example;
+
+import org.jet.test.EmployeeQueries;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
+public class EmployeeDao
+{
+    public void getEmployeeById(int id, Connection connection) throws SQLException
+    {
+        EmployeeQueries.Runners.GetEmployeeByIdQueryRunner()
+                .connection(connection)
+                .ID(id) // set the id before executing.
+                .executeAsStream() // can also use .execute() or .executeAndReturnIterator()
+                .forEach(e -> {
+                    System.out.println("Employee Id " + e.id() + ", Employee Name" + e.name());
+                });
+    }
+}
+
+
+```
