@@ -18,16 +18,16 @@ public class WrapperFileUtils
                 packageName);
 
         final File directory = new File(absoluteDirectoryPath);
-        if (!directory.exists())
+        if (!directory.exists() && !directory.mkdirs())
         {
-            boolean created = directory.mkdirs();
-            if (!created)
-            {
-                throw new RuntimeException("Unable to create directory at : [" + directory + "]");
-            }
+            throw new RuntimeException("Unable to create directory at : [" + directory + "]");
         }
 
-        logger.info("** ==== Writing generated classes to : [ " + absoluteDirectoryPath + "] ==== **");
+        logger.info("-------------------------------------------------------------------------------------");
+        logger.info("-------------------------------------------------------------------------------------");
+        logger.info("---------- Writing generated classes to : [ " + absoluteDirectoryPath + "] ----------");
+        logger.info("-------------------------------------------------------------------------------------");
+        logger.info("-------------------------------------------------------------------------------------");
 
         return absoluteDirectoryPath;
     }

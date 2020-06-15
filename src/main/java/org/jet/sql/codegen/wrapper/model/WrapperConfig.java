@@ -9,22 +9,15 @@ import java.util.Arrays;
  */
 public class WrapperConfig
 {
-    private String packageName;
-    private String className;
-    private SqlQuery[] queries;
+    private final String packageName;
+    private final String className;
+    private final SqlQuery[] queries;
 
-    /**
-     * Default constructor used by JAXB Object parser.
-     */
-    public WrapperConfig()
-    {
-    }
-
-    public WrapperConfig(String packageName, String className, SqlQuery query)
+    public WrapperConfig(String packageName, String className, SqlQuery[] query)
     {
         this.packageName = packageName;
         this.className = className;
-        this.queries = new SqlQuery[] { query };
+        this.queries = query;
     }
 
     public String getPackageName()
@@ -45,14 +38,6 @@ public class WrapperConfig
     public String getGeneratedDate()
     {
         return LocalDateTime.now().toString();
-    }
-
-    public void preProcess()
-    {
-        for (SqlQuery query : queries)
-        {
-            query.preProcess();
-        }
     }
 
     @Override

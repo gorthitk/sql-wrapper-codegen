@@ -34,19 +34,4 @@ public class ResultColumnsTest
         final ResultColumns columnConfig = new ResultColumns("col_name_1", "varchar");
         Assert.assertEquals(columnConfig.evaluateAndGetResultSetAccessorMethodName(), "colName1");
     }
-
-
-    @Test(expectedExceptions = RuntimeException.class)
-    public void testInvalidResultColumnsType()
-    {
-        final ResultColumns columnConfig = new ResultColumns("col_name", "string");
-        columnConfig.getType();
-    }
-
-    @Test
-    public void testValidResultColumnsType()
-    {
-        final ResultColumns columnConfig = new ResultColumns("col_name", "varchar");
-        Assert.assertEquals(columnConfig.getType(), JDBCType.VARCHAR);
-    }
 }

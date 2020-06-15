@@ -10,86 +10,65 @@ import java.sql.JDBCType;
  */
 public class QueryArgument
 {
-    private String type;
-    private String name;
-    private int index;
+    private final int paramType;
+    private final String paramClassName;
+    private final String paramName;
+    private final int paramIndex;
 
-    /**
-     * Default constructor used by JAXB Object parser.
-     */
-    public QueryArgument()
+    public QueryArgument(
+            final String paramName, final int paramType, final String paramClassName,
+            final int paramIndex
+    )
     {
+        this.paramType = paramType;
+        this.paramClassName = paramClassName;
+        this.paramName = paramName;
+        this.paramIndex = paramIndex;
     }
 
-    public QueryArgument(final String name, final String type)
+    public String getParamTypeName()
     {
-        this.name = name;
-        this.type = type;
+        return JDBCType.valueOf(paramType).getName();
     }
 
-    /**
-     * @return Name of the query argument.
-     */
-    public String getName()
+    public String getParamClassName()
     {
-        return name;
+        return paramClassName;
     }
 
-    /**
-     * @return JDBCType corresponding to the string value in the yaml file.
-     * @throws RuntimeException when the type defined in the yaml file is not a valid JDBC Type.
-     */
-    public JDBCType getType()
+    public String getParamName()
     {
-        try
-        {
-            return JDBCType.valueOf(type.toUpperCase());
-        }
-        catch (IllegalArgumentException ie)
-        {
-            throw new RuntimeException("Invalid JDBC Type ", ie);
-        }
+        return paramName;
     }
 
-    public void setIndex(int index)
+    public int getParamIndex()
     {
-        this.index = index;
-    }
-
-    public int getIndex()
-    {
-        return index;
+        return paramIndex;
     }
 
     /**
      * @return Returns a string in special format after
-     * - removing the {@link SqlQuery#QUERY_PARAM_PREFIX} prefix
      * - removing any and all underscores
      * - the return string is in camelcase format , except the first character is lower case
      * and upper case
      * (since the method names need to start with lower case and the value returned by this
      * method is used as the method name in the generated sql wrapper classes)
-     *
-     * @throws RuntimeException if the argument name is not prefixed by {@link SqlQuery#QUERY_PARAM_PREFIX} or if the argument name has special characters excluding ("-")
+     * @throws RuntimeException if the argument name has special characters excluding ("-")
      */
     public String evaluateAndGetArgumentSetterMethodName()
     {
-        if (!name.startsWith(SqlQuery.QUERY_PARAM_PREFIX))
-        {
-            throw new RuntimeException("Query argument names must be prefixed with " + SqlQuery.QUERY_PARAM_PREFIX + ": [ " + name + " ]");
-        }
-
         final StringBuilder sb = new StringBuilder();
         boolean previousCharWasUnderscore = false;
 
-        for (int i = SqlQuery.QUERY_PARAM_PREFIX.length(); i < name.length(); i++)
+        for (int i = 0; i < paramName.length(); i++)
         {
-            final char c = name.charAt(i);
+            final char c = paramName.charAt(i);
             if (c == '_')
             {
                 if (previousCharWasUnderscore)
                 {
-                    throw new RuntimeException("Invalid argument name, underscore must be followed by a valid alphanumeric character");
+                    throw new RuntimeException("Invalid argument name, underscore must be followed by a valid " +
+                            "alphanumeric character");
                 }
                 previousCharWasUnderscore = true;
                 sb.append(c);
@@ -98,33 +77,31 @@ public class QueryArgument
 
             if (!Character.isAlphabetic(c) && !Character.isDigit(c))
             {
-                throw new RuntimeException("argument name cannot contain special characters, only letters or numbers are" +
+                throw new RuntimeException("argument name cannot contain special characters, only letters or numbers " +
+                        "are" +
                         " allowed");
             }
 
-            sb.append(previousCharWasUnderscore && Character.isAlphabetic(c) ? Character.toUpperCase(c) : c);
+            sb.append(previousCharWasUnderscore && Character.isAlphabetic(c) ? Character.toUpperCase(c) : Character.isAlphabetic(c) ? Character.toLowerCase(c) : c);
             previousCharWasUnderscore = false;
         }
 
         if (sb.length() == 0)
         {
-            throw new RuntimeException("Invalid argument name : " + name);
+            throw new RuntimeException("Invalid argument name : " + paramName);
         }
 
         return sb.toString().toUpperCase();
-    }
-
-    public String getJavaReturnType()
-    {
-        return JavaTypeLookUp.get(getType());
     }
 
     @Override
     public String toString()
     {
         return "QueryArgument{" +
-                "type='" + type + '\'' +
-                ", name='" + name + '\'' +
+                "paramType=" + paramType +
+                ", paramClassName='" + paramClassName + '\'' +
+                ", paramName='" + paramName + '\'' +
+                ", paramIndex=" + paramIndex +
                 '}';
     }
 }

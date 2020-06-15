@@ -30,7 +30,7 @@ public class SqlWrapperPlugin implements Plugin<Project>
                 {
                     final String relativeDirectoryPath = project.file(extension.generatedFileDirectory).getPath();
                     final SqlWrapperCodeGen sqlWrapperCodeGen = new SqlWrapperCodeGen();
-                    extension.sources.forEach(file -> sqlWrapperCodeGen.run(file.getPath(), relativeDirectoryPath, project.getLogger()));
+                    extension.sources.forEach(file -> sqlWrapperCodeGen.run(file, relativeDirectoryPath, project.getLogger()));
                 });
     }
 }

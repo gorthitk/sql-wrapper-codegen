@@ -4,6 +4,7 @@
 
 package org.jet.sql.codegen;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.JDBCType;
@@ -57,7 +58,7 @@ public abstract class QueryProcessor<T extends ResultSetRowContainer>
             batches = new ArrayList<>();
         }
 
-        batches.add(params);
+        batches.add(List.copyOf(params));
         params.clear();
     }
 
@@ -116,7 +117,7 @@ public abstract class QueryProcessor<T extends ResultSetRowContainer>
         return resultSetContainerSupplier.supply(ps.executeQuery());
     }
 
-    public Stream <T> execute() throws SQLException
+    public Stream <T> executeAsStream() throws SQLException
     {
         if (batches != null)
         {
@@ -129,7 +130,13 @@ public abstract class QueryProcessor<T extends ResultSetRowContainer>
         return (Stream<T>) StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, 0), false);
     }
 
-    public int[] executeBatch() throws SQLException //3
+    public boolean execute() throws SQLException
+    {
+        final PreparedStatement ps = _createPreparedStatement();
+        return ps.execute();
+    }
+
+    public int[] executeBatch() throws SQLException
     {
         if (!params.isEmpty())
         {
@@ -241,15 +248,23 @@ public abstract class QueryProcessor<T extends ResultSetRowContainer>
                     case TIME:
                     {
                         preparedStatement.setTime(index, (Time) value);
+                        return;
                     }
                     case DATE:
                     {
                         preparedStatement.setDate(index, (Date) value);
+                        return;
                     }
                     case TIMESTAMP:
                     case TIMESTAMP_WITH_TIMEZONE:
                     {
                         preparedStatement.setTimestamp(index, (Timestamp) value);
+                        return;
+                    }
+                    case NUMERIC:
+                    {
+                        preparedStatement.setBigDecimal(index, (BigDecimal) value);
+                        return;
                     }
                     default:
                     {

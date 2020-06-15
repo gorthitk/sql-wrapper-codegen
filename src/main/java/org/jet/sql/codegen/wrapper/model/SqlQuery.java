@@ -1,12 +1,6 @@
 package org.jet.sql.codegen.wrapper.model;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author tgorthi
@@ -14,16 +8,10 @@ import java.util.stream.Stream;
  */
 public class SqlQuery
 {
-    public static final String QUERY_PARAM_PREFIX = "arg_";
-    private String name;
-    private String sql;
-    private QueryArgument[] arguments;
-    private ResultColumns[] results;
-
-    /**
-     * Default constructor used by JAXB Object parser.
-     */
-    public SqlQuery() {}
+    private final String name;
+    private final String sql;
+    private final QueryArgument[] arguments;
+    private final ResultColumns[] results;
 
     /**
      * Constructor only used for testing purposes.
@@ -56,35 +44,6 @@ public class SqlQuery
         return results;
     }
 
-    public void preProcess()
-    {
-        final Map<String, QueryArgument> argumentMap = arguments != null ? Stream.of(arguments)
-                .collect(Collectors.toMap(QueryArgument::getName, Function.identity())) : Collections.emptyMap();
-
-        final StringBuilder sb = new StringBuilder();
-        int index = 1;
-        for (String s : sql.replace(",", " , ").split(" "))
-        {
-            if (s.startsWith(QUERY_PARAM_PREFIX))
-            {
-                if (!argumentMap.containsKey(s))
-                {
-                    throw new RuntimeException("The following argument is not decalred in the configuration : " + s);
-                }
-                argumentMap.get(s).setIndex(index);
-                index++;
-                sb.append("?");
-            }
-            else
-            {
-                sb.append(s);
-            }
-            sb.append(" ");
-        }
-
-        sql = sb.toString();
-    }
-
     public String getClassName()
     {
         final StringBuilder sb = new StringBuilder();
@@ -104,7 +63,7 @@ public class SqlQuery
             }
             else
             {
-                sb.append(c);
+                sb.append(Character.toLowerCase(c));
             }
 
             previousCharWasUnderscore = false;

@@ -1,7 +1,5 @@
 package org.jet.sql.codegen.wrapper.model;
 
-import java.sql.JDBCType;
-
 /**
  * Simple POJO to hold the configuration for result columns of sql specified in parsed from the yaml file.
  *
@@ -13,38 +11,20 @@ public class ResultColumns
     private String type;
     private String name;
 
-    public String getName()
-    {
-        return name;
-    }
-
-    /**
-     * Default constructor used by JAXB Object parser.
-     */
-    public ResultColumns()
-    {
-    }
-
     public ResultColumns(final String name, final String type)
     {
         this.name = name;
         this.type = type;
     }
 
-    /**
-     * @return JDBCType corresponding to the string value in the yaml file.
-     * @throws RuntimeException when the type defined in the yaml file is not a valid JDBC Type.
-     */
-    public JDBCType getType()
+    public String getName()
     {
-        try
-        {
-            return JDBCType.valueOf(type.toUpperCase());
-        }
-        catch (IllegalArgumentException ie)
-        {
-            throw new RuntimeException("Invalid JDBC Type ", ie);
-        }
+        return name;
+    }
+
+    public String getJavaReturnType()
+    {
+        return type;
     }
 
     /**
@@ -54,7 +34,6 @@ public class ResultColumns
      * and upper case
      * (since the method names need to start with lower case and the value returned by this
      * method is used as the method name in the generated sql wrapper classes)
-     *
      * @throws RuntimeException if the return column name has special characters excluding ("-")
      */
     public String evaluateAndGetResultSetAccessorMethodName()
@@ -72,11 +51,12 @@ public class ResultColumns
 
             if (!Character.isAlphabetic(c) && !Character.isDigit(c))
             {
-                throw new RuntimeException("column name cannot contain special characters, only letters or numbers are" +
+                throw new RuntimeException("column name cannot contain special characters, only letters or numbers " +
+                        "are" +
                         " allowed");
             }
 
-            sb.append(previousCharWasUnderscore && Character.isAlphabetic(c) ? Character.toUpperCase(c) : c);
+            sb.append(previousCharWasUnderscore && Character.isAlphabetic(c) ? Character.toUpperCase(c) : Character.isAlphabetic(c) ? Character.toLowerCase(c) : c);
 
             previousCharWasUnderscore = false;
         }
@@ -87,11 +67,6 @@ public class ResultColumns
         }
 
         return sb.toString();
-    }
-
-    public String getJavaReturnType()
-    {
-        return JavaTypeLookUp.get(getType());
     }
 
     @Override

@@ -50,9 +50,9 @@ public class {{className}}
 
             {{#arguments}}
 
-            public {{className}}QueryRunner {{evaluateAndGetArgumentSetterMethodName}}(final {{javaReturnType}} value)
+            public {{className}}QueryRunner {{evaluateAndGetArgumentSetterMethodName}}(final {{paramClassName}} value)
             {
-                addParam({{index}}, {{type}}, value);
+                addParam({{paramIndex}}, {{paramTypeName}}, value);
                 return this;
             }
 
