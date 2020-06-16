@@ -22,10 +22,9 @@ publishing {
     }
 }
 
-// Use java-gradle-plugin to generate plugin descriptors and specify plugin ids
 gradlePlugin {
     plugins {
-        greetingsPlugin {
+        sqlWrapperPlugin {
             id = 'org.jet.sql.codegen'
             implementationClass = 'org.jet.sql.codegen.plugin.SqlWrapperPlugin'
         }
@@ -41,7 +40,7 @@ pluginBundle {
     tags = ['java', 'jdbc' ,'type-safe', 'generate']
 
     plugins {
-        greetingsPlugin {
+        sqlWrapperPlugin {
             displayName = 'Java SQL Type safe wrapper generate plugin'
         }
     }
