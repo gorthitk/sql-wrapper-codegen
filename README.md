@@ -1,5 +1,8 @@
 # sql-wrapper-codegen [![Gradle Status](https://gradleupdate.appspot.com/jetsasank/sql-wrapper-codegen/status.svg)](https://gradleupdate.appspot.com/jetsasank/sql-wrapper-codegen/status) [![CircleCI](https://circleci.com/gh/jetsasank/sql-wrapper-codegen/tree/master.svg?style=svg)](https://circleci.com/gh/jetsasank/sql-wrapper-codegen/tree/master) [![Build Status](https://travis-ci.org/jetsasank/sql-wrapper-codegen.svg?branch=master)](https://travis-ci.org/jetsasank/sql-wrapper-codegen)
 
+Available on  Gradle public repository : https://plugins.gradle.org/plugin/org.jet.sql.codegen
+
+
 ![Language](https://img.shields.io/badge/language-Java-brightgreen.svg)&nbsp;
 
 Gradle plugin to reduce boiler-plate code for running JDBC queries in java and improve [type safety](https://en.wikipedia.org/wiki/Type_safety) while running [PreparedStatements](https://docs.oracle.com/javase/7/docs/api/java/sql/PreparedStatement.html) in java.
