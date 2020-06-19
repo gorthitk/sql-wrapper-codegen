@@ -18,7 +18,7 @@ This plugin requires simple YAML files and a gradle plugin to generate wrapper j
 ```groovy
 // Add the gradle plugin.
 plugins {
-  id 'org.jet.sql.codegen' version '1.1.1'
+  id 'org.jet.sql.codegen' version '1.1.2'
 }
 
 sqlWrapperConfig {
